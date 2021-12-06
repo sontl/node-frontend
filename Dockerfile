@@ -1,5 +1,4 @@
-FROM node:10.24.1-alpine3.11
-
+FROM node:10
 
 # Puppeteer dependencies, from: https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 
@@ -10,9 +9,15 @@ RUN apt-get update && apt-get install -y wget --no-install-recommends \
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update \
-    && apt-get install -y google-chrome-unstable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst ttf-freefont \
-      --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/* \
+    && apt-get install -y fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst ttf-freefont \
+      --no-install-recommends 
+
+ARG TARGETPLATFORM
+RUN if [ "$TARGETPLATFORM" = "linux/amd64" ];then CHROME_VERSION=chromium; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; \ 
+	then CHROME_VERSION=chromium; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then CHROME_VERSION=chromium; \
+	 else CHROME_VERSION=chromium; fi \
+	&& apt-get install -y ${CHROME_VERSION} \ 
+	&& rm -rf /var/lib/apt/lists/* \
     && apt-get purge --auto-remove -y curl \
     && rm -rf /src/*.deb
 
