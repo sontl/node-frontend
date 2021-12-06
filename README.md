@@ -1,4 +1,22 @@
 [![Build Status](https://travis-ci.org/tiangolo/node-frontend.svg?branch=master)](https://travis-ci.org/tiangolo/node-frontend)
+## To build for multiple cpu architect: 
+
+### Install qemu to create the emulator for building
+```bash
+apt-get install qemu qemu-user-static binfmt-support debootstrap -y
+```
+### Create custom builder
+```bash
+docker buildx create --name armBuilder
+```
+### User new custom builder
+```bash
+docker buildx use armBuilder
+```
+### Bulid new image for multi platform
+```bash
+sudo docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t sontl/frontend-node:latest --push .
+```
 
 ## Supported tags and respective `Dockerfile` links
 
