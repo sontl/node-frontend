@@ -2,13 +2,13 @@
 
 set -e
 set -x
-
+DOCKER_USERNAME=sontl
+DOCKER_PASSWORD=
+NodeMajor=16
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-docker build -t tiangolo/node-frontend:10 .
+DockerTag="${NodeMajor}"
 
-docker build -t tiangolo/node-frontend:latest .
+docker buildx build --push --platform linux/amd64,linux/arm64/v8 -t "sontl/multiarch-node-frontend:${DockerTag}" --build-arg NodeMajor=$NodeMajor  .
 
-docker push tiangolo/node-frontend:10
 
-docker push tiangolo/node-frontend:latest
